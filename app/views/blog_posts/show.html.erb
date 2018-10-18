@@ -1,0 +1,25 @@
+<h2><%= @blog_post.title %></h2>
+<p><%= @blog_post.content %></p>
+
+<%= link_to("Edit Blog Post", "/blog_posts/#{@blog_post.id}/edit") %>
+<%= link_to("Destroy blog post!!!!", "/blog_posts/#{@blog_post.id}", method: :delete, data: {confirm: "Are you sure?"}) %>
+
+<% @blog_post.comments.each do |comment| %>
+ <div class="comment">
+   <h5><%= comment.username %></h5>
+   <p><%= comment.content %></p>
+   <%= link_to("Delete Comment", "/comments/#{comment.id}", method: :delete, data: {confirm: "Are you sure?"}) %>
+ </div>
+<% end %>
+
+<h4>Leave a comment?</h4>
+
+<%= form_tag("/comments", method: :post) do %>
+  <input type="text" name="username" placeholder="Username">
+  <br>
+  <textarea name="content" placeholder="Write a comment"></textarea> 
+  <br>
+  <input type="hidden" name="blog_post_id" value="<%= @blog_post.id %>">
+  <input type="submit" value="Leave comment">
+
+<% end %>
