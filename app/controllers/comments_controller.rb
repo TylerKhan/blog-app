@@ -1,11 +1,22 @@
 class CommentsController < ApplicationController
   def create
-    comment = Comment.create(
+    def index
+      redirect_back(fallback_location: "/blog_post")
+
+
+    end
+
+    @new_comment = Comment.new(
                               username: params[:username],
                               content: params[:content],
                               blog_post_id: params[:blog_post_id]
-      )
-    redirect_to "/blog_posts/#{comment.blog_post_id}"
+                          )
+    if @new_comment.save
+    redirect_to "/blog_posts/#{@new_comment.blog_post_id}"
+    else
+    @blog_post = BlogPost.find(params[:blog_post_id])  
+    render '/blog_posts/show'
+    end
   end
 
   def destroy

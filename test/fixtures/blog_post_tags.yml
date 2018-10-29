@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  blog_post_id: MyString
+  integer: MyString
+  tag_id: 1
+
+two:
+  blog_post_id: MyString
+  integer: MyString
+  tag_id: 1

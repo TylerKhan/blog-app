@@ -4,6 +4,8 @@
 <%= link_to("Edit Blog Post", "/blog_posts/#{@blog_post.id}/edit") %>
 <%= link_to("Destroy blog post!!!!", "/blog_posts/#{@blog_post.id}", method: :delete, data: {confirm: "Are you sure?"}) %>
 
+<% if user_signed_in? %>
+
 <% @blog_post.comments.each do |comment| %>
  <div class="comment">
    <h5><%= comment.username %></h5>
@@ -12,14 +14,29 @@
  </div>
 <% end %>
 
+
+
+<% if @new_comment.errors.any?%>
+ <div id="error-explanation">
+  <h2><%= pluralize(@new_comment.errors.count, "error") %> prevent this BlogPost from being saved:</h2>
+  <ul>
+    <% @new_comment.errors.full_messages.each do |message|%>
+      <li><%= message %></li>
+    <% end %>
+  </ul>
+  </div>
+<% end %>
+
 <h4>Leave a comment?</h4>
 
 <%= form_tag("/comments", method: :post) do %>
-  <input type="text" name="username" placeholder="Username">
+  <input type="text" name="username" value="<%= @new_comment.username %>" placeholder="Username">
   <br>
-  <textarea name="content" placeholder="Write a comment"></textarea> 
+  <textarea name="content" placeholder="Write a comment"><%= @new_comment.content %></textarea> 
   <br>
   <input type="hidden" name="blog_post_id" value="<%= @blog_post.id %>">
   <input type="submit" value="Leave comment">
+
+  <% end %>
 
 <% end %>

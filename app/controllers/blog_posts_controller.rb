@@ -1,39 +1,70 @@
 class BlogPostsController < ApplicationController
+  before_action :authenticate_user!
   def index
-    @blog_posts = BlogPost.all
+    if params[:tag] && params[:tag].length > 2
+      @tag_name = params[:tag]
+      @tag = Tag.where('name iLIKE ?', "%#{@tag_name}%")[0]
+
+      if @tag != nil
+        @blog_posts = @tag.blog_posts
+      else
+        @blog_posts = []
+      end
+    elsif params[:tah] && params[:tag].length < #
+      @error_message = "Enter a topic with 3 or more characters!"
+      @blog_posts = BlogPost.all.order(id: :asc)
+    else
+      @blog_posts = BlogPost.all.order(id: :asc)
+    end
   end
 
   def show
     id = params[:id]
     @blog_post = BlogPost.find(id)
+    @new_comment = Comment.new
   end
 
   def new
+    @blog_post = BlogPost.new
+    @tags = Tag.all
 
   end
 
   def create
-    title = params[:title]
-    content = params[:content]
-    blog_post = BlogPost.create(title: title, content: content)
+    @blog_post = BlogPost.new(
+                              title: params[:title], 
+                              content: params[:content]
+                              )
 
-    redirect_to("/blog_posts/#{blog_post.id}")
+    if @blog_post.save
+      @blog_post.create_tags(params[:tag_ids]) if params[:tag_ids]
+    end
+
+    redirect_to("/blog_posts/#{@blog_post.id}")
+    else
+    @tags = Tag.all
+    render 'new'
   end
 
   def edit
     id = params[:id]
     @blog_post = BlogPost.find(id)
+    @tags = Tag.all
 
   end
 
   def update
-    blog_post = BlogPost.find(params[:id])
-    blog_post.update(
-                    title: params[:title],
-                    content: params[:content]
-                    )
-    redirect_to("/blog_posts/#{blog_post.id}")
+    @blog_post = BlogPost.find(params[:id])
+
+  if @blog_post.update(title: params[:title],content: params[:content])
+    @blog_post.update_tags(params[:tag]) if params[:tag_ids]
+
+    redirect_to("/blog_posts/#{@blog_post.id}")
+    else
+  @tags = Tag.all
+  render 'edit'
   end
+end
 
   def destroy
      blog_post = BlogPost.find(params[:id])
