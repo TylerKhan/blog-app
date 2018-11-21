@@ -16,6 +16,11 @@ class BlogPostsController < ApplicationController
     else
       @blog_posts = BlogPost.all.order(id: :asc)
     end
+
+    respond_to do |format|
+      format.html {render 'index'}
+      format.json {render json: @blog_posts}
+    end
   end
 
   def show
@@ -33,17 +38,18 @@ class BlogPostsController < ApplicationController
   def create
     @blog_post = BlogPost.new(
                               title: params[:title], 
-                              content: params[:content]
+                              content: params[:content],
+                              user_id: current_user.id
                               )
 
     if @blog_post.save
       @blog_post.create_tags(params[:tag_ids]) if params[:tag_ids]
-    end
-
+      flash[:success] = "Good Job! Your blog post was created!"
     redirect_to("/blog_posts/#{@blog_post.id}")
     else
     @tags = Tag.all
     render 'new'
+   end
   end
 
   def edit

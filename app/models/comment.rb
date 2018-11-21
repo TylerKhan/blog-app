@@ -1,7 +1,8 @@
 class Comment < ApplicationRecord
+  belongs_to :user
   belongs_to :blog_post
   validates :blog_post, presence: true
-  validates :username, presence: true, length: { minimum: 3, maximum: 20 }
+  validates :user, presence: true
   validates :content, presence: true
 
 end

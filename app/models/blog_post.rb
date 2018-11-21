@@ -1,14 +1,15 @@
 class BlogPost < ApplicationRecord
-  has_many :comments
-  has_many :blog_post_tags
+  belongs_to :user
+  has_many :comments, dependent: :destroy
+  has_many :blog_post_tags, dependent: :destroy
   has_many :tags, through: :blog_post_tags
   validates :title, length: { minimum: 3, maximum: 25}
   validates :content, presence: true
 
 def create_tags(input_tag_ids)
   input_tag_ids.each do |tag_id|
-    BlogPost.create(
-                    Blog_post_id: id,
+    BlogPostTag.create(
+                    blog_post_id: id,
                     tag_id: tag_id
                   )
   end
@@ -26,6 +27,10 @@ end
     new_tag_ids.each do |tag_id|
       BlogPostTag.create(blog_post_id: id, tag_id: tag_id)
     end
+  end
+
+  def short_content
+    return content[0,100] + "..."
   end
 end
 

@@ -1,16 +1,21 @@
 <h2><%= @blog_post.title %></h2>
+<h4><%=@blog_post.user.email%></h4>
 <p><%= @blog_post.content %></p>
 
+<% if user_signed_in? && current_user.id == @blog_post.user_id %>
 <%= link_to("Edit Blog Post", "/blog_posts/#{@blog_post.id}/edit") %>
 <%= link_to("Destroy blog post!!!!", "/blog_posts/#{@blog_post.id}", method: :delete, data: {confirm: "Are you sure?"}) %>
+<% end %>
 
 <% if user_signed_in? %>
 
 <% @blog_post.comments.each do |comment| %>
  <div class="comment">
-   <h5><%= comment.username %></h5>
+   <h5>By <%= comment.user.email %></h5>
    <p><%= comment.content %></p>
+   <% if user_signed_in? && current_user.id == comment.user_id %>
    <%= link_to("Delete Comment", "/comments/#{comment.id}", method: :delete, data: {confirm: "Are you sure?"}) %>
+   <% end %>
  </div>
 <% end %>
 
@@ -30,10 +35,9 @@
 <h4>Leave a comment?</h4>
 
 <%= form_tag("/comments", method: :post) do %>
-  <input type="text" name="username" value="<%= @new_comment.username %>" placeholder="Username">
-  <br>
   <textarea name="content" placeholder="Write a comment"><%= @new_comment.content %></textarea> 
   <br>
+  <input type="hidden" name="user_id" value="<%= current_user.id %>">
   <input type="hidden" name="blog_post_id" value="<%= @blog_post.id %>">
   <input type="submit" value="Leave comment">
 
