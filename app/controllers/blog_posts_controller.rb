@@ -39,7 +39,8 @@ class BlogPostsController < ApplicationController
     @blog_post = BlogPost.new(
                               title: params[:title], 
                               content: params[:content],
-                              user_id: current_user.id
+                              user_id: current_user.id,
+                              cover_image: params[:cover_image]
                               )
 
     if @blog_post.save

@@ -1,5 +1,6 @@
 <h2><%= @blog_post.title %></h2>
-<h4><%=@blog_post.user.email%></h4>
+<%= image_tag(@blog_post.cover_image) if @blog_post.cover_image.attached? %>
+<h4><%= @blog_post.user.email%></h4>
 <p><%= @blog_post.content %></p>
 
 <% if user_signed_in? && current_user.id == @blog_post.user_id %>
